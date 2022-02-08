@@ -93,49 +93,95 @@ signed main()
     cin >> t;
     while (t--)
     {
-        int n, d;
-        cin >> n >> d;
-        vector<int> v(n);
-        set<int> s;
+        int n;
+        cin >> n;
+        string s[n];
+        map<string, int> m;
+        map<char, int> mx;
         for (int i = 0; i < n; i++)
         {
-            cin >> v[i];
-            s.insert(i);
+            cin >> s[i];
+            m[s[i]]++;
         }
-        bool b = true;
-        int ans = 0, x, a, f;
-        for (int i = 0; i < n; i++)
+        bool ans = false, b = false;
+        string x, y;
+        for (int i = 0; i < n && !ans; i++)
         {
-            x = 1;
-            if (v[i] && s.find(i) != s.end())
+            x = "";
+            y = "";
+            b = true;
+            mx.clear();
+            for (int j = 0; j < ((int)s[i].size()) / 2; j++)
             {
-                b = false;
-                s.erase(i);
-                a = (i + n - d) % n;
-                f = 0;
-                while (a != i)
-                {
-                    if (v[a])
-                        x++;
-                    else
-                    {
-                        if (!b)
-                            f = x;
-                        b = true;
-                        ans = max(ans, x);
-                        x = 0;
-                    }
-                    s.erase(a);
-                    a = (a + n - d) % n;
-                }
-                ans = max(ans, f + x);
+                if (s[i][j] != s[i][(int)s[i].size() - j - 1])
+                    b = false;
             }
-            if (!b)
+            if (b)
+            {
+                ans = true;
                 break;
+            }
+            x = s[i];
+            if ((int)x.size() == 2)
+            {
+                y += x[0];
+                if (m[y] > 0)
+                {
+                    ans = true;
+                    break;
+                }
+                y = "";
+                y += x[1];
+                y += x[0];
+                if (m[y] > 0)
+                {
+                    ans = true;
+                    break;
+                }
+                for (int j = 0; j < 26; j++)
+                {
+                    if (m[(char)(j + 97) + y])
+                    {
+                        ans = true;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                y = "";
+                y += x[2];
+                y += x[1];
+                y += x[0];
+                if (m[y] > 0)
+                {
+                    ans = true;
+                    break;
+                }
+                y = "";
+                y += x[1];
+                y += x[0];
+                if (m[y] > 0)
+                {
+                    ans = true;
+                    break;
+                }
+                if (x[1] == x[2])
+                {
+                    y = "";
+                    y += x[0];
+                    if (m[y] > 0)
+                    {
+                        ans = true;
+                        break;
+                    }
+                }
+            }
+            m[s[i]]--;
         }
-        if (b)
-            cout << ans << "\n";
+        if (ans)
+            cout << "YES\n";
         else
-            cout << "-1\n";
+            cout << "NO\n";
     }
 }
